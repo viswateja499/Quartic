@@ -10,18 +10,19 @@ namespace CodingChallenge
     {
         public Processor()
         {
-            DataSet = new Dictionary<string, List<Data>>();
+            DataSet = new List<Data>();
         }
 
-        public Dictionary<string, List<Data>> DataSet { get; set; }
+        public List<Data> DataSet { get; set; }
 
         public RuleEngine RuleEngine { get; set; }
 
-        public async void ReadAndSetFileAsync(string path)
+        public bool ReadAndSetFile(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
                 Console.WriteLine("Given Path is Not Valid");
+                return false;
             }
 
             if (File.Exists(path))
@@ -34,21 +35,17 @@ namespace CodingChallenge
                     foreach (var obj in items)
                     {
                         Data data = CreateDataModel(obj);
-                        if (DataSet.ContainsKey(data.Signal))
-                        {
-                            List<Data> signalData;
-                            DataSet.TryGetValue(data.Signal, out signalData);
-                            signalData.Add(data);
-                        }
-                        else
-                        {
-                            var signalData = new List<Data>();
-                            signalData.Add(data);
-                            DataSet.Add(data.Signal, signalData);
-                        }
+                        DataSet.Add(data);
+
                     }
                 }
             }
+            else
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void ValidateData()
@@ -72,7 +69,7 @@ namespace CodingChallenge
                 }
                 else if (invalid is Data<DateTime>)
                 {
-                    var data = invalid as Data<int>;
+                    var data = invalid as Data<DateTime>;
                     Console.WriteLine("{0} {1}", data.Signal, data.Value);
                 }
                 else if (invalid is Data<string>)

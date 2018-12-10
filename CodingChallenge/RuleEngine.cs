@@ -40,23 +40,21 @@ namespace CodingChallenge
             }
         }
 
-        public List<Data> ValidateData(Dictionary<string, List<Data>> data)
+        public List<Data> ValidateData(List<Data> data)
         {
             var invalidData = new List<Data>();
             foreach (var rule in processedRules)
             {
-                List<Data> dataSet;
-
-                if (data.TryGetValue(rule.SignalName, out dataSet))
+                if (data.Any(d => d.Signal.ToLower() == rule.SignalName.ToLower()))
                 {
-                    if (dataSet.OfType<Data<int>>().Any())
+                    if (data.OfType<Data<int>>().Any(d => d.Signal.ToLower() == rule.SignalName.ToLower()))
                     {
                         double ruleValue = 0;
                         if (double.TryParse(rule.Value, out ruleValue))
                         {
                             var value = Convert.ToInt32(Math.Round(Convert.ToDouble(rule.Value)));
 
-                            foreach (var validateDataSet in dataSet.OfType<Data<int>>())
+                            foreach (var validateDataSet in data.OfType<Data<int>>())
                             {
                                 if (!ValidateNumericData(rule, validateDataSet, value))
                                 {
@@ -66,11 +64,12 @@ namespace CodingChallenge
 
                         }
                     }
-                    else if (dataSet.OfType<DateTime>().Any())
+
+                    if (data.OfType<Data<DateTime>>().Any(d => d.Signal.ToLower() == rule.SignalName.ToLower()))
                     {
-                        if (rule.Value == "Future" || rule.Value == "Present" || rule.Value == "Past")
+                        if (rule.Value.ToLower() == "future" || rule.Value.ToLower() == "present" || rule.Value.ToLower() == "past")
                         {
-                            foreach (var validateDataSet in dataSet.OfType<Data<DateTime>>())
+                            foreach (var validateDataSet in data.OfType<Data<DateTime>>())
                             {
                                 if (!ValidateDateTimeData(rule, validateDataSet))
                                 {
@@ -79,11 +78,12 @@ namespace CodingChallenge
                             }
                         }
                     }
-                    else if (dataSet.OfType<string>().Any())
+
+                    if (data.OfType<Data<string>>().Any(d => d.Signal.ToLower() == rule.SignalName.ToLower()))
                     {
                         if (rule.Value.ToLower() == "low" || rule.Value.ToLower() == "high")
                         {
-                            foreach (var validateDataSet in dataSet.OfType<Data<string>>())
+                            foreach (var validateDataSet in data.OfType<Data<string>>())
                             {
                                 if (!ValidatestringData(rule, validateDataSet))
                                 {
