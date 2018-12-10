@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace CodingChallenge
@@ -53,9 +54,32 @@ namespace CodingChallenge
         public void ValidateData()
         {
             var invalidData = RuleEngine.ValidateData(DataSet);
+            if (invalidData.Any())
+            {
+                Console.WriteLine("Invalid Data:");
+            }
+            else
+            {
+                Console.WriteLine("No Invalid Data");
+            }
+
             foreach (var invalid in invalidData)
             {
-                Console.WriteLine("{0}", invalid.Signal);
+                if (invalid is Data<int>)
+                {
+                    var data = invalid as Data<int>;
+                    Console.WriteLine("{0} {1}", data.Signal, data.Value);
+                }
+                else if (invalid is Data<DateTime>)
+                {
+                    var data = invalid as Data<int>;
+                    Console.WriteLine("{0} {1}", data.Signal, data.Value);
+                }
+                else if (invalid is Data<string>)
+                {
+                    var data = invalid as Data<string>;
+                    Console.WriteLine("{0} {1}", data.Signal, data.Value);
+                }
             }
         }
 
