@@ -55,6 +55,7 @@
     <Compile Include="GenericData.cs" />
     <Compile Include="Rule.cs" />
     <Compile Include="RuleEngine.cs" />
+    <Compile Include="Time.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -65,7 +65,7 @@ namespace CodingChallenge
             Console.WriteLine("Rules Format");
             Console.WriteLine("1) Integer: Signal Condition(>, <, ==)  Value");
             Console.WriteLine("2) String: Signal Condition(==, !=) Value");
-            Console.WriteLine("2) Datetime: Signal Condition(>, <, ==) Value(Year)");
+            Console.WriteLine("2) Datetime: Signal Condition(In, NotIn) Value(Present, Future, Past)");
             List<string> rules = new List<string>();
 
             // first read input till there are nonempty items, means they are not null and not ""

@@ -10,6 +10,10 @@
 
         NotEqual = 3,
 
-        Equals = 4
+        Equals = 4,
+
+        In = 5,
+
+        NotIn = 6,
     }
 }

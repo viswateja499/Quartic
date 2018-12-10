@@ -66,10 +66,88 @@ namespace CodingChallenge
 
                         }
                     }
+                    else if (dataSet.OfType<DateTime>().Any())
+                    {
+                        if (rule.Value == "Future" || rule.Value == "Present" || rule.Value == "Past")
+                        {
+                            foreach (var validateDataSet in dataSet.OfType<Data<DateTime>>())
+                            {
+                                if (!ValidateDateTimeData(rule, validateDataSet))
+                                {
+                                    invalidData.Add(validateDataSet);
+                                }
+                            }
+                        }
+                    }
+                    else if (dataSet.OfType<string>().Any())
+                    {
+                        if (rule.Value.ToLower() == "low" || rule.Value.ToLower() == "high")
+                        {
+                            foreach (var validateDataSet in dataSet.OfType<Data<string>>())
+                            {
+                                if (!ValidatestringData(rule, validateDataSet))
+                                {
+                                    invalidData.Add(validateDataSet);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
             return invalidData;
+        }
+
+        private bool ValidatestringData(Rule rule, Data<string> validateDataSet)
+        {
+            if (Condition.Equals == rule.Condition)
+            {
+                return validateDataSet.Value.ToLower() == rule.Value.ToLower();
+            }
+            else if (Condition.NotEqual == rule.Condition)
+            {
+                return validateDataSet.Value.ToLower() != rule.Value.ToLower();
+            }
+
+            return false;
+        }
+
+        private bool ValidateDateTimeData(Rule rule, Data<DateTime> validateDataSet)
+        {
+            var currentYear = DateTime.Now.Year;
+
+            if (Condition.In == rule.Condition)
+            {
+                if (rule.Value == "Future")
+                {
+                   return validateDataSet.Value.Year > currentYear;
+                }
+                else if (rule.Value == "Present")
+                {
+                    return validateDataSet.Value.Year == currentYear;
+                }
+                else if (rule.Value == "Past")
+                {
+                    return validateDataSet.Value.Year < currentYear;
+                }
+            }
+            else if (Condition.NotIn == rule.Condition)
+            {
+                if (rule.Value == "Future")
+                {
+                    return validateDataSet.Value.Year < currentYear;
+                }
+                else if (rule.Value == "Present")
+                {
+                    return validateDataSet.Value.Year != currentYear;
+                }
+                else if (rule.Value == "Past")
+                {
+                    return validateDataSet.Value.Year > currentYear;
+                }
+            }
+
+            return false;
         }
 
         private bool ValidateNumericData(Rule rule, Data<int> validateDataSet, int value)
@@ -113,6 +191,14 @@ namespace CodingChallenge
 
                 case "!=":
                     outPut = Condition.NotEqual;
+                    break;
+
+                case "In":
+                    outPut = Condition.In;
+                    break;
+
+                case "NotIn":
+                    outPut = Condition.NotIn;
                     break;
 
                 default:
